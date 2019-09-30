@@ -11,7 +11,7 @@ class IndexView(generic.base.TemplateView):
 class ListView(LoginRequiredMixin, generic.ListView):
     model = Quote
     paginate_by = 20
-
+    
 class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Quote
 

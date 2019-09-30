@@ -1,5 +1,7 @@
 {% extends 'quotr/_layout.html' %}
 {% block content %}
+{% include 'quotr/_back.html' %}
+<h1>New Quote</h1>
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">

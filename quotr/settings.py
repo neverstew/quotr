@@ -59,7 +59,9 @@ ROOT_URLCONF = 'quotr.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'quotr/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

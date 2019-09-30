@@ -25,7 +25,13 @@
             <label for="bmenub" class="burger pseudo button">menu</label>
 
             <div class="menu">
-                <a href="{% url 'quotes:list' %}" class="pseudo button icon-picture">Quotes</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'quotes:list' %}" class="pseudo button">Quotes</a>
+                <a href="{% url 'account_logout' %}" class="pseudo button">Log Out</a>
+                {% else %}
+                <a href="{% url 'account_login' %}" class="pseudo button">Log In</a>
+                {% endif %}
+
             </div>
         </nav>
     </header>

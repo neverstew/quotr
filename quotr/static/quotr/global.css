@@ -28,6 +28,10 @@ a {
   color: unset;
 }
 
+blockquote {
+  font-style:italic;
+}
+
 ul {
   padding-left: 0;
 }

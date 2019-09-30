@@ -4,10 +4,6 @@
     max-width: 400px;
 }
 
-.quote blockquote {
-    font-style:italic;
-}
-
 .quote span {
     font-size: 0.8em;
     text-align: right;

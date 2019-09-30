@@ -1,7 +1,14 @@
 {% extends 'quotr/_layout.html' %}
+
+{% block styles %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/quote.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/quote_detail.css' %}">
+{% endblock %}
+
 {% block content %}
 {% include 'quotr/_back.html' %}
-<h1>Quote</h1>
-<blockquote>{{quote.text}}</blockquote>
-<p>{{quote.book.author}}</p>
+<div class="quote quote-detail measure-narrow">
+    <blockquote>{{quote.text}}</blockquote>
+</div>
 {% endblock %}

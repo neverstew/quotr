@@ -1,0 +1,15 @@
+.quote-detail {
+    margin: 0 auto;
+}
+
+.quote-detail blockquote {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    font-size: 1.6em;
+}
+
+@media screen and (min-width: 800px) {
+    .quote-detail blockquote {
+        font-size: 2em;
+    }
+}

@@ -1,0 +1,9 @@
+<h1>Quotes</h1>
+<ul>
+  {% for quote in quote_list %}
+  <li>
+    <blockquote>{{quote.text}}</blockquote>
+    <p>{{quote.book.author}}</p>
+  </li>
+  {% endfor %}
+</ul>

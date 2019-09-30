@@ -10,5 +10,7 @@
     {{ form.as_p }}
     <input type="submit" value="Save">
 </form>
+{% if 'update' in request.path %}
 <a href="{% url 'quotes:delete' quote.id %}" class="button error">Delete</a>
+{% endif %}
 {% endblock %}

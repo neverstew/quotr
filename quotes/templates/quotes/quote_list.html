@@ -1,12 +1,20 @@
 {% extends 'quotr/_layout.html' %}
+
+{% block styles %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/quote_list.css' %}">
+{% endblock %}
+
 {% block content %}
 <h1>Quotes</h1>
-<ul>
+<section class="flex one two-800 center">
   {% for quote in quote_list %}
-  <li>
-    <blockquote>{{quote.text}}</blockquote>
-    <p>{{quote.book.author}}</p>
-  </li>
+  <article class="quote card">
+    <a href="{% url 'quotes:detail' quote.id %}">
+      <blockquote>{{quote.text}}</blockquote>
+    </a>
+    <span>{{quote.book.author}}</span>
+  </article>
   {% endfor %}
-</ul>
+</section>
 {% endblock %}

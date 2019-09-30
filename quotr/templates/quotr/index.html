@@ -1,0 +1,17 @@
+{% extends 'quotr/_layout.html' %}
+
+{% block styles %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'quotr/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hero flex one center">
+    <h1>Welcome</h1>
+    <h2 class="measure">Quotr helps you keep your books in good condition and access key quotes anywhere you need.</h2>
+</div>
+<div class="cta-auth flex two-500 center">
+    <a href="{% url 'account_login' %}" class="full half-500 sixth-800 button">Login</a>
+    <a href="{% url 'account_signup' %}" class="full half-500 offset-fourth-500 sixth-800 pseudo button">Sign Up</a>
+</div>
+{% endblock %}

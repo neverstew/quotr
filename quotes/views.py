@@ -5,7 +5,7 @@ from .models import Quote
 
 # Create your views here.
 class IndexView(generic.base.TemplateView):
-    template_name = 'quotes/index.html'
+    template_name = 'quotr/index.html'
 
 class ListView(generic.ListView):
     model = Quote

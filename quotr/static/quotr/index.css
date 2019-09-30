@@ -1,0 +1,17 @@
+.hero {
+    padding: 8em 0;
+    text-align: center;
+}
+
+.hero h2 {
+    font-size: 1em;
+}
+
+.cta-auth {
+    max-width: 1080px;
+    align-items: baseline;
+}
+
+.cta-auth a:nth-child(2) {
+    text-align: center;
+}

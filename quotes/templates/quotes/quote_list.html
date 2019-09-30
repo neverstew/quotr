@@ -9,7 +9,7 @@
 <h1>Quotes</h1>
 <section class="flex one two-800 center">
   {% for quote in quote_list %}
-  <article class="quote card">
+  <article class="quote card measure-narrow">
     <a href="{% url 'quotes:detail' quote.id %}">
       <blockquote>{{quote.text}}</blockquote>
     </a>

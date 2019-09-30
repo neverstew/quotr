@@ -1,9 +1,14 @@
 {% extends 'quotr/_layout.html' %}
 {% block content %}
 {% include 'quotr/_back.html' %}
+{% if 'update' in request.path %}
+<h1>Update Quote</h1>
+{% else %}
 <h1>New Quote</h1>
+{% endif %}
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">
 </form>
+<a href="{% url 'quotes:delete' quote.id %}" class="button error">Delete</a>
 {% endblock %}

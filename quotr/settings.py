@@ -133,5 +133,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    "quotr/static"
+]
+
 
 SITE_ID = 1

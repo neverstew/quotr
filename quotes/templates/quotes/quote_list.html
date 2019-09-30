@@ -17,7 +17,7 @@
   </article>
   {% endfor %}
 </section>
-<a class="action-btn" href="{% url 'quotes:new' %}">
+<a data-tooltip="Add a quote" class="action-btn tooltip-left" href="{% url 'quotes:new' %}">
   <i class="fas fa-plus-circle fa-3x"></i>
 </a>
 {% endblock %}

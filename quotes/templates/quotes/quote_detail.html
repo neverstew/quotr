@@ -11,7 +11,7 @@
 <div class="quote quote-detail measure">
     <blockquote>{{quote.text}}</blockquote>
 </div>
-<a class="action-btn" href="{% url 'quotes:update' quote.id%}">
+<a data-tooltip="Edit this quote" class="action-btn tooltip-left" href="{% url 'quotes:update' quote.id%}">
     <i class="far fa-edit fa-2x"></i>
 </a>
 {% endblock %}

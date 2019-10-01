@@ -2,6 +2,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse_lazy
 from django.utils.html import escape
+from freezegun import freeze_time
+
+import datetime
 
 from .models import Quote, Book
 
@@ -52,12 +55,20 @@ class TestQuoteJourneys(TestCase):
 
     def test_can_create_new_quote(self):
         tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
-
-        res = self.client.post(QUOTES_URLS['new-quote'](), data={'book': 1, 'text': "A new quote", 'page': 567}, follow=True)
+        with freeze_time('2020-01-01'):
+            self.client.force_login(tiny)
+            res = self.client.post(QUOTES_URLS['new-quote'](), data={'book': 1, 'text': "A new quote", 'page': 567}, follow=True)
         
         # raises a DoesNotExist exception if this query fails
-        Quote.objects.get(text='A new quote', page=567)
+        quote = Quote.objects.get(text='A new quote', page=567)
+        expected_timestamp = datetime.datetime(2020, 1, 1, 0, 0, 0)
+        self.assertTrue(all([
+            quote.created.year == expected_timestamp.year,
+            quote.created.month == expected_timestamp.month,
+            quote.created.day == expected_timestamp.day,
+            quote.created.hour == expected_timestamp.hour,
+            quote.created.minute == expected_timestamp.minute,
+        ]))
         self.assertInHTML('<h1>Quotes</h1>', res.rendered_content)
         self.assertInHTML('A new quote', res.rendered_content)
 
@@ -66,19 +77,27 @@ class TestQuoteJourneys(TestCase):
         self.client.force_login(tiny)
 
         res = self.client.get(QUOTES_URLS['detail-quote'](1))
-        self.assertInHTML(escape("There's a thing that they said"), res.rendered_content)
+        self.assertInHTML(escape("This is a quote"), res.rendered_content)
         res = self.client.get(QUOTES_URLS['detail-quote'](2))
-        self.assertInHTML(escape("There's another thing that they said"), res.rendered_content)
+        self.assertInHTML(escape("This is another quote"), res.rendered_content)
 
     def test_can_update_quote(self):
         tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
-
-        res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "An updated quote", 'page': 567}, follow=True)
+        with freeze_time('2020-01-10'):
+            self.client.force_login(tiny)
+            res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "An modified quote", 'page': 567}, follow=True)
         
+        expected_timestamp = datetime.datetime(2020, 1, 10, 0, 0, 0)
         quote = Quote.objects.get(pk=1)
-        self.assertEqual('An updated quote', quote.text)
-        self.assertInHTML('An updated quote', res.rendered_content)
+        self.assertTrue(all([
+            quote.modified.year == expected_timestamp.year,
+            quote.modified.month == expected_timestamp.month,
+            quote.modified.day == expected_timestamp.day,
+            quote.modified.hour == expected_timestamp.hour,
+            quote.modified.minute == expected_timestamp.minute,
+        ]))
+        self.assertEqual('An modified quote', quote.text)
+        self.assertInHTML('An modified quote', res.rendered_content)
 
     def test_can_delete_quote(self):
         tiny = User.objects.get(username="tiny")
@@ -136,12 +155,20 @@ class TestBookJourneys(TestCase):
 
     def test_can_create_new_book(self):
         tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
-
-        res = self.client.post(BOOKS_URLS['new-book'](), data={'title': "Mr Writer", 'author': 'Ms Writer'}, follow=True)
+        with freeze_time('2020-01-01'):
+            self.client.force_login(tiny)
+            res = self.client.post(BOOKS_URLS['new-book'](), data={'title': "Mr Writer", 'author': 'Ms Writer'}, follow=True)
         
         # raises a DoesNotExist exception if this query fails
-        Book.objects.get(title='Mr Writer', author='Ms Writer')
+        book = Book.objects.get(title='Mr Writer', author='Ms Writer')
+        expected_timestamp = datetime.datetime(2020, 1, 1, 0, 0, 0)
+        self.assertTrue(all([
+            book.created.year == expected_timestamp.year,
+            book.created.month == expected_timestamp.month,
+            book.created.day == expected_timestamp.day,
+            book.created.hour == expected_timestamp.hour,
+            book.created.minute == expected_timestamp.minute,
+        ]))
         self.assertInHTML('<h1>Books</h1>', res.rendered_content)
         self.assertInHTML('Mr Writer', res.rendered_content)
 
@@ -156,11 +183,19 @@ class TestBookJourneys(TestCase):
 
     def test_can_update_book(self):
         tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
-
-        res = self.client.post(BOOKS_URLS['update-book'](1), data={'title': "Big Guns", 'author': 'Arnold Schwarzenegger'}, follow=True)
+        with freeze_time('2020-01-10'):
+            self.client.force_login(tiny)
+            res = self.client.post(BOOKS_URLS['update-book'](1), data={'title': "Big Guns", 'author': 'Arnold Schwarzenegger'}, follow=True)
         
         book = Book.objects.get(pk=1)
+        expected_timestamp = datetime.datetime(2020, 1, 10, 0, 0, 0)
+        self.assertTrue(all([
+            book.modified.year == expected_timestamp.year,
+            book.modified.month == expected_timestamp.month,
+            book.modified.day == expected_timestamp.day,
+            book.modified.hour == expected_timestamp.hour,
+            book.modified.minute == expected_timestamp.minute,
+        ]))
         self.assertEqual('Big Guns', book.title)
         self.assertInHTML('Big Guns', res.rendered_content)
 

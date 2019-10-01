@@ -1,0 +1,48 @@
+[{
+    "model": "quotes.book",
+    "pk": 1,
+    "fields": {
+        "title": "Sprint",
+        "author": "Jake Knapp"
+    }
+}, {
+    "model": "quotes.book",
+    "pk": 2,
+    "fields": {
+        "title": "Another book",
+        "author": "Some guy"
+    }
+}, {
+    "model": "quotes.quote",
+    "pk": 1,
+    "fields": {
+        "book": 1,
+        "text": "There's a thing that they said",
+        "page": 35
+    }
+}, {
+    "model": "quotes.quote",
+    "pk": 2,
+    "fields": {
+        "book": 2,
+        "text": "There's another thing that they said",
+        "page": 358
+    }
+}, {
+    "model": "quotes.quote",
+    "pk": 3,
+    "fields": {
+        "book": 2,
+        "text": "And then he said...",
+        "page": 45
+    }
+}, {
+    "model": "quotes.quote",
+    "pk": 4,
+    "fields": {
+        "book": 2,
+        "text": "And then SHE said...",
+        "page": 45
+    }
+}
+]

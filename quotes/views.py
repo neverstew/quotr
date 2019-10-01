@@ -10,6 +10,7 @@ class IndexView(generic.base.TemplateView):
 class ListQuoteView(LoginRequiredMixin, generic.ListView):
     model = Quote
     paginate_by = 20
+    ordering = '-modified'
     
 class DetailQuoteView(LoginRequiredMixin, generic.DetailView):
     model = Quote

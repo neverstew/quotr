@@ -45,22 +45,23 @@ class TestQuoteJourneys(TestCase):
         for res in res_list:
             self.assertEqual(200, res.status_code)
 
-    def test_quotes_list_shows_first_20_quotes(self):
-        for i in range(1, 20):
-            new_quote = Quote(
-                book=Book.objects.get(pk=1),
-                page=i,
-                text=f"This is a quote on page {i}"
-            )
-            new_quote.save()
+    def test_quotes_list_shows_20_last_modified_quotes(self):
+        for i in range(10, 30):
+            with freeze_time(f"2030-01-{i}"):
+                new_quote = Quote(
+                    book=Book.objects.get(pk=1),
+                    page=i,
+                    text=f"This is the quote on page {i}"
+                )
+                new_quote.save()
 
         tiny = User.objects.get(username="tiny")
         self.client.force_login(tiny)
 
         res = self.client.get(QUOTES_URLS['list-quote']())
-        for quote in Quote.objects.all()[:20]:
-            self.assertInHTML(escape(quote.text), res.rendered_content)
-        for quote in Quote.objects.all()[21:]:
+        for i in range(10 ,30):
+            self.assertInHTML(f"This is the quote on page {i}", res.rendered_content)
+        for quote in Quote.objects.order_by('-modified')[20:]:
             self.assertNotContains(res, escape(quote.text))
 
     def test_can_create_new_quote(self):

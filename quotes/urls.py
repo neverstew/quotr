@@ -4,9 +4,14 @@ from . import views
 
 app_name = 'quotes'
 urlpatterns = [
-    path('', views.ListView.as_view(), name='list'),
-    path('new', views.NewView.as_view(), name='new'),
-    path('<int:pk>', views.DetailView.as_view(), name='detail'),
-    path('<int:pk>/update', views.UpdateView.as_view(), name='update'),
-    path('<int:pk>/delete', views.DeleteView.as_view(), name='delete'),
+    path('quotes/', views.ListQuoteView.as_view(), name='list-quote'),
+    path('quotes/new', views.NewQuoteView.as_view(), name='new-quote'),
+    path('quotes/<int:pk>', views.DetailQuoteView.as_view(), name='detail-quote'),
+    path('quotes/<int:pk>/update', views.UpdateQuoteView.as_view(), name='update-quote'),
+    path('quotes/<int:pk>/delete', views.DeleteQuoteView.as_view(), name='delete-quote'),
+    path('books/', views.ListBookView.as_view(), name='list-book'),
+    path('books/new', views.NewBookView.as_view(), name='new-book'),
+    path('books/<int:pk>', views.DetailBookView.as_view(), name='detail-book'),
+    path('books/<int:pk>/update', views.UpdateBookView.as_view(), name='update-book'),
+    path('books/<int:pk>/delete', views.DeleteBookView.as_view(), name='delete-book'),
 ]

@@ -2,15 +2,15 @@
 {% block content %}
 {% include 'quotr/_back.html' %}
 {% if 'update' in request.path %}
-<h1>Update Quote</h1>
+<h1>Update Book</h1>
 {% else %}
-<h1>New Quote</h1>
+<h1>New Book</h1>
 {% endif %}
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">
 </form>
 {% if 'update' in request.path %}
-<a href="{% url 'quotes:delete-quote' quote.id %}" class="button error">Delete</a>
+<a href="{% url 'quotes:delete-book' book.id %}" class="button error">Delete</a>
 {% endif %}
 {% endblock %}

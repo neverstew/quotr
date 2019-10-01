@@ -2,29 +2,48 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import Quote
+from .models import Quote, Book
 
-# Create your views here.
 class IndexView(generic.base.TemplateView):
     template_name = 'quotr/index.html'
 
-class ListView(LoginRequiredMixin, generic.ListView):
+class ListQuoteView(LoginRequiredMixin, generic.ListView):
     model = Quote
     paginate_by = 20
     
-class DetailView(LoginRequiredMixin, generic.DetailView):
+class DetailQuoteView(LoginRequiredMixin, generic.DetailView):
     model = Quote
 
-class NewView(LoginRequiredMixin, generic.CreateView):
-    model = Quote
-    fields = ['book', 'text', 'page']
-    success_url = reverse_lazy('quotes:list')
-
-class UpdateView(LoginRequiredMixin, generic.UpdateView):
+class NewQuoteView(LoginRequiredMixin, generic.CreateView):
     model = Quote
     fields = ['book', 'text', 'page']
+    success_url = reverse_lazy('quotes:list-quote')
 
-class DeleteView(LoginRequiredMixin, generic.DeleteView):
+class UpdateQuoteView(LoginRequiredMixin, generic.UpdateView):
     model = Quote
-    success_url = reverse_lazy('quotes:list')
+    fields = ['book', 'text', 'page']
 
+class DeleteQuoteView(LoginRequiredMixin, generic.DeleteView):
+    model = Quote
+    success_url = reverse_lazy('quotes:list-quote')
+
+
+class ListBookView(LoginRequiredMixin, generic.ListView):
+    model = Book
+    paginate_by = 20
+    
+class DetailBookView(LoginRequiredMixin, generic.DetailView):
+    model = Book
+
+class NewBookView(LoginRequiredMixin, generic.CreateView):
+    model = Book
+    fields = ['title', 'author']
+    success_url = reverse_lazy('quotes:list-book')
+
+class UpdateBookView(LoginRequiredMixin, generic.UpdateView):
+    model = Book
+    fields = ['title', 'author']
+
+class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
+    model = Book
+    success_url = reverse_lazy('quotes:list-book')

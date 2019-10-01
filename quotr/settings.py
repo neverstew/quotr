@@ -141,4 +141,4 @@ STATICFILES_DIRS = [
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = reverse_lazy('quotes:list')
+LOGIN_REDIRECT_URL = reverse_lazy('quotes:list-quote')

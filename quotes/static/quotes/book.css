@@ -1,0 +1,14 @@
+.book {
+    margin: 1em;
+    padding: 1em;
+    text-align: center;
+}
+
+.book h2 {
+    margin: 0 1em 1em 1em;
+    padding: 8px;
+}
+
+.book span {
+    font-size: 0.8em;
+}

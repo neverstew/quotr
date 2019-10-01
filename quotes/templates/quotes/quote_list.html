@@ -10,14 +10,14 @@
 <section class="flex one two-800 center">
   {% for quote in quote_list %}
   <article class="quote card measure-narrow">
-    <a href="{% url 'quotes:detail' quote.id %}">
+    <a href="{% url 'quotes:detail-quote' quote.id %}">
       <blockquote>{{quote.text}}</blockquote>
     </a>
     <span>{{quote.book.author}}</span>
   </article>
   {% endfor %}
 </section>
-<a data-tooltip="Add a quote" class="action-btn tooltip-left" href="{% url 'quotes:new' %}">
+<a data-tooltip="Add a quote" class="action-btn tooltip-left" href="{% url 'quotes:new-quote' %}">
   <i class="fas fa-plus-circle fa-3x"></i>
 </a>
 {% endblock %}

@@ -27,7 +27,8 @@
 
             <div class="menu">
                 {% if user.is_authenticated %}
-                <a href="{% url 'quotes:list' %}" class="pseudo button">Quotes</a>
+                <a href="{% url 'quotes:list-book' %}" class="pseudo button">Books</a>
+                <a href="{% url 'quotes:list-quote' %}" class="pseudo button">Quotes</a>
                 <a href="{% url 'account_logout' %}" class="pseudo button">Log Out</a>
                 {% else %}
                 <a href="{% url 'account_login' %}" class="pseudo button">Log In</a>

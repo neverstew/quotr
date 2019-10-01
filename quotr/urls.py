@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     path('', IndexView.as_view()),
-    url('^quotes/', include('quotes.urls')),
+    url('', include('quotes.urls')),
 ]

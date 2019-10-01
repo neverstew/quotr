@@ -29,7 +29,8 @@ a {
 }
 
 blockquote {
-  font-style:italic;
+  font-family: 'Merriweather', serif;
+  font-weight: 300;
 }
 
 ul {

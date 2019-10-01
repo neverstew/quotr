@@ -36,6 +36,11 @@ class ListBookView(LoginRequiredMixin, generic.ListView):
 class DetailBookView(LoginRequiredMixin, generic.DetailView):
     model = Book
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quotes'] = Quote.objects.filter(book=self.get_object())
+        return context
+
 class NewBookView(LoginRequiredMixin, generic.CreateView):
     model = Book
     fields = ['title', 'author']

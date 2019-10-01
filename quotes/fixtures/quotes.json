@@ -33,6 +33,28 @@
     }
   },
   {
+    "model": "quotes.quote",
+    "pk": 4,
+    "fields": {
+      "book": 2,
+      "text": "Actually it's quite good",
+      "page": 100,
+      "created": "2019-10-15T12:58:57.672Z",
+      "modified": "2019-10-16T12:58:57.672Z"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 5,
+    "fields": {
+      "book": 2,
+      "text": "No wait, it definitely sucks",
+      "page": 200,
+      "created": "2019-10-17T12:58:57.672Z",
+      "modified": "2019-10-17T12:58:57.672Z"
+    }
+  },
+  {
     "model": "quotes.book",
     "pk": 1,
     "fields": {

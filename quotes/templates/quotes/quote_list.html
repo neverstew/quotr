@@ -9,12 +9,7 @@
 <h1>Quotes</h1>
 <section class="flex one two-800 center">
   {% for quote in quote_list %}
-  <article class="quote card measure-narrow">
-    <a href="{% url 'quotes:detail-quote' quote.id %}">
-      <blockquote>{{quote.text}}</blockquote>
-    </a>
-    <span>{{quote.book.author}}</span>
-  </article>
+  {% include 'quotes/_quote_card.html' with quote=quote%}
   {% endfor %}
 </section>
 <a data-tooltip="Add a quote" class="action-btn tooltip-left" href="{% url 'quotes:new-quote' %}">

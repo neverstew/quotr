@@ -4,6 +4,7 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'quotes/book.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'quotes/book_detail.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/quote.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -12,6 +13,13 @@
     <h1>{{book.title}}</h1>
     <h2>{{book.author}}</h2>
 </div>
+
+<section class="flex one two-800 center">
+    <h3 class="full">Quotes</h3>
+    {% for quote in quotes %}
+    {% include 'quotes/_quote_card.html' with quote=quote%}
+    {% endfor %}
+</section>
 <a data-tooltip="Edit this book" class="action-btn tooltip-left" href="{% url 'quotes:update-book' book.id%}">
     <i class="far fa-edit fa-2x"></i>
 </a>

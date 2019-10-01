@@ -1,0 +1,6 @@
+<article class="quote card measure-narrow">
+    <a href="{% url 'quotes:detail-quote' quote.id %}">
+        <blockquote>{{quote.text}}</blockquote>
+    </a>
+    <span>{{quote.book.author}}</span>
+</article>

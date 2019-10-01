@@ -183,7 +183,7 @@ class TestBookJourneys(TestCase):
         self.assertInHTML('<h1>Books</h1>', res.rendered_content)
         self.assertInHTML('Mr Writer', res.rendered_content)
 
-    def test_books_detail_shows_book(self):
+    def test_books_detail_contains_all_book_information(self):
         tiny = User.objects.get(username="tiny")
         self.client.force_login(tiny)
 
@@ -191,6 +191,11 @@ class TestBookJourneys(TestCase):
         self.assertInHTML(escape("Sprint"), res.rendered_content)
         res = self.client.get(BOOKS_URLS['detail-book'](2))
         self.assertInHTML(escape("Another book"), res.rendered_content)
+
+        # all related quotes
+        self.assertInHTML(escape("This book sucks"), res.rendered_content)
+        self.assertInHTML(escape("Actually it's quite good"), res.rendered_content)
+        self.assertInHTML(escape("No wait, it definitely sucks"), res.rendered_content)
 
     def test_can_update_book(self):
         tiny = User.objects.get(username="tiny")

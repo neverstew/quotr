@@ -4,6 +4,7 @@ chardet==3.0.4
 defusedxml==0.6.0
 Django==2.2.5
 django-allauth==0.40.0
+freezegun==0.3.12
 idna==2.8
 isort==4.3.21
 lazy-object-proxy==1.4.2
@@ -11,6 +12,7 @@ mccabe==0.6.1
 oauthlib==3.1.0
 pkg-resources==0.0.0
 pylint==2.4.2
+python-dateutil==2.8.0
 python3-openid==3.1.0
 pytz==2019.2
 requests==2.22.0

@@ -7,6 +7,7 @@ Django==2.2.5
 django-allauth==0.40.0
 django-heroku==0.3.1
 freezegun==0.3.12
+gunicorn==19.9.0
 idna==2.8
 isort==4.3.21
 lazy-object-proxy==1.4.2

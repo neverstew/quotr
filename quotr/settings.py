@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from django.urls import reverse_lazy
 
+from dotenv import load_dotenv
+load_dotenv()
+
+ENV = os.getenv('ENV', default='PROD')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,10 +26,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-5*yfus4*w54bm$b*c*9*$!%)7li2t5_5&v)xzd8_@nt_90v*-'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if ENV == "DEV" else False
 
 ALLOWED_HOSTS = []
 
@@ -145,4 +150,5 @@ LOGIN_REDIRECT_URL = reverse_lazy('quotes:list-quote')
 
 # Configure Django App for Heroku.
 import django_heroku
-django_heroku.settings(locals())
+HEROKU_STATICFILES = False if ENV=="DEV" else True
+django_heroku.settings(locals(), staticfiles=HEROKU_STATICFILES)

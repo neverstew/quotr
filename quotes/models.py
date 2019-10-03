@@ -11,6 +11,9 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse('quotes:detail-book', args=(self.pk,))
 
+    def __str__(self):
+        return f"{self.title} by {self.author}"
+
 class Quote(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     text = models.TextField()
@@ -20,6 +23,10 @@ class Quote(models.Model):
 
     def get_absolute_url(self):
         return reverse('quotes:detail-quote', args=(self.pk,))
+
+    def __str__(self):
+        truncated_text = self.text[:20]+'...' if len(self.text) > 20 else self.text
+        return f"{truncated_text} by {self.book.author}"
 
 admin.site.register(Book)
 admin.site.register(Quote)

@@ -24,9 +24,35 @@ main {
 }
 
 a {
+  z-index: 1;
+  position: relative;
   text-decoration: none;
   color: unset;
 }
+
+a.link::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: -0.25em;
+  right: -0.25em;
+  background-color: #3390E1;
+  transform-origin: bottom center;
+  transform: scaleY(0.1);
+  transition: all 0.1s ease-in-out;
+}
+
+a.link:hover {
+  color: #fff;
+}
+
+a.link:hover::before {
+  transform: scaleY(1);
+  background-color: #3390E1;
+}
+
 
 blockquote {
   font-family: 'Merriweather', serif;

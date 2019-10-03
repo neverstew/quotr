@@ -8,6 +8,19 @@
     font-size: 1.6em;
 }
 
+.quote--book-info {
+    margin: 1em 0;
+}
+
+.quote--book-info dt {
+    font-weight: 700;
+}
+
+.quote--book-info dd {
+    margin-left: 0;
+    margin-bottom: 0.8em;
+}
+
 @media screen and (min-width: 800px) {
     .quote-detail blockquote {
         font-size: 2em;

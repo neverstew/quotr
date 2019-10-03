@@ -11,6 +11,15 @@
 <div class="quote quote-detail measure">
     <blockquote>{{quote.text}}</blockquote>
 </div>
+<section class="quote--book-info">
+    <h2>Book Information</h2>
+    <dl>
+        <dt>Title</dt>
+        <dd><a class="link" href="{% url 'quotes:detail-book' quote.book.id %}">{{quote.book.title}}</a></dd>
+        <dt>Author</dt>
+        <dd>{{quote.book.author}}</dd>
+    </dl>
+</section>
 <a data-tooltip="Edit this quote" class="action-btn tooltip-left" href="{% url 'quotes:update-quote' quote.id%}">
     <i class="far fa-edit fa-2x"></i>
 </a>

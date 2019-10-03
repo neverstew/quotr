@@ -92,6 +92,12 @@ class TestQuoteJourneys(TestCase):
         res = self.client.get(QUOTES_URLS['detail-quote'](2))
         self.assertInHTML(escape("This is another quote"), res.rendered_content)
 
+        # related book information
+        self.assertInHTML("<dt>Title</dt>", res.rendered_content)
+        self.assertInHTML(f"<dd><a class=\"link\" href=\"{reverse_lazy('quotes:detail-book', kwargs={'pk': 1})}\">Sprint</a></dd>", res.rendered_content)
+        self.assertInHTML("<dt>Author</dt>", res.rendered_content)
+        self.assertInHTML("<dd>Jake Knapp</dd>", res.rendered_content)
+
     def test_can_update_quote(self):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-10'):

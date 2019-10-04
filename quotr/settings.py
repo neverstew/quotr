@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import dj_database_url
 import os
 from django.urls import reverse_lazy
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -86,12 +88,9 @@ WSGI_APPLICATION = 'quotr.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = {}
+# This will be over-written by django_heroku in production
+DATABASES['default'] = dj_database_url.config(default='postgres://django:django@localhost:5432/django')
 
 AUTHENTICATION_BACKENDS = (
         # Needed to login by username in Django admin, regardless of `allauth`

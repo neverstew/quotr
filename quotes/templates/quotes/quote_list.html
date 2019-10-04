@@ -3,10 +3,17 @@
 {% block styles %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'quotes/quote.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/quote_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>Quotes</h1>
+<div class="flex one two-800">
+  <h1>Quotes</h1>
+  <form id="search_form" action="{% url 'quotes:list-quote' %}" method="get" class="flex">
+    {{ search_form }}
+    <input type="submit" value="Search">
+  </form>
+</div>
 <section class="flex one two-800 center">
   {% if quote_list|length_is:"0" %}
   <p>You don't seem to have any quotes saved yet! Add some using the button below.</p>

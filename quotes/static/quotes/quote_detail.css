@@ -1,11 +1,11 @@
 .quote-detail {
     margin: 0 auto;
+    padding: 0;
 }
 
 .quote-detail blockquote {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    font-size: 1.6em;
+    padding: 1em 0 1em 1em;
+    font-size: 1.2em;
 }
 
 .quote--book-info {
@@ -21,7 +21,26 @@
     margin-bottom: 0.8em;
 }
 
+@media screen and (max-width: 800px) {
+    .quote--book-info h2 {
+        padding-bottom: 0;
+        font-size: 1.2em;
+    }
+}
+
 @media screen and (min-width: 800px) {
+    .quote-detail {
+        padding: 2em;
+    }
+
+    .quote-detail blockquote {
+        padding-top: 1em;
+        padding-bottom: 1em;
+        font-size: 1.6em;
+    }
+}
+
+@media screen and (min-width: 1200px) {
     .quote-detail blockquote {
         font-size: 2em;
     }

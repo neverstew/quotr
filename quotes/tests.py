@@ -22,7 +22,7 @@ class TestQuoteJourneys(TestCase):
     fixtures = ['quotes', 'users']
 
     def test_must_log_in_to_access_quotes(self):
-        tiny = User.objects.get(username="tiny")
+        bigboii = User.objects.get(username="bigboii")
 
         res_list = [
             self.client.get(QUOTES_URLS['new-quote'](), follow=True),
@@ -34,7 +34,7 @@ class TestQuoteJourneys(TestCase):
         for res in res_list:
             self.assertContains(res, "<h1>Sign In</h1>")
 
-        self.client.force_login(tiny)
+        self.client.force_login(bigboii)
         res_list = [
             self.client.get(QUOTES_URLS['new-quote']()),
             self.client.get(QUOTES_URLS['list-quote']()),
@@ -46,23 +46,34 @@ class TestQuoteJourneys(TestCase):
             self.assertEqual(200, res.status_code)
 
     def test_quotes_list_shows_20_last_modified_quotes(self):
+        tiny = User.objects.get(username="tiny")
         for i in range(10, 30):
             with freeze_time(f"2030-01-{i}"):
                 new_quote = Quote(
                     book=Book.objects.get(pk=1),
                     page=i,
-                    text=f"This is the quote on page {i}"
+                    text=f"This is the quote on page {i}",
+                    created_by=tiny
                 )
                 new_quote.save()
 
-        tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
+        bigboii = User.objects.get(username='bigboii')
+        with freeze_time(f"2030-02-01"):
+            new_quote = Quote(
+                book=Book.objects.get(pk=1),
+                page=24,
+                text=f"This is the quote by bigboii",
+                created_by=bigboii
+            )
+            new_quote.save()
 
+        self.client.force_login(tiny)
         res = self.client.get(QUOTES_URLS['list-quote']())
         for i in range(10 ,30):
             self.assertInHTML(f"This is the quote on page {i}", res.rendered_content)
-        for quote in Quote.objects.order_by('-modified')[20:]:
-            self.assertNotContains(res, escape(quote.text))
+        
+        self.assertNotContains(res, escape("This is the quote on page 9"))
+        self.assertNotContains(res, escape("This is the quote by bigboii"))
 
     def test_can_create_new_quote(self):
         tiny = User.objects.get(username="tiny")
@@ -80,12 +91,12 @@ class TestQuoteJourneys(TestCase):
             quote.created.hour == expected_timestamp.hour,
             quote.created.minute == expected_timestamp.minute,
         ]))
-        self.assertInHTML('<h1>Quotes</h1>', res.rendered_content)
+        self.assertEqual(tiny, quote.created_by)
         self.assertInHTML('A new quote', res.rendered_content)
-
+    
     def test_quotes_detail_shows_quote(self):
-        tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
+        bigboii = User.objects.get(username="bigboii")
+        self.client.force_login(bigboii)
 
         res = self.client.get(QUOTES_URLS['detail-quote'](1))
         self.assertInHTML(escape("This is a quote"), res.rendered_content)
@@ -98,11 +109,18 @@ class TestQuoteJourneys(TestCase):
         self.assertInHTML("<dt>Author</dt>", res.rendered_content)
         self.assertInHTML("<dd>Jake Knapp</dd>", res.rendered_content)
 
-    def test_can_update_quote(self):
+    def test_cannot_see_quote_detail_for_another_user(self):
         tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.get(QUOTES_URLS['detail-quote'](1))
+        self.assertEqual(404, res.status_code)        
+
+    def test_can_update_quote(self):
+        bigboii = User.objects.get(username="bigboii")
         with freeze_time('2020-01-10'):
-            self.client.force_login(tiny)
-            res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "An modified quote", 'page': 567}, follow=True)
+            self.client.force_login(bigboii)
+            res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "A modified quote", 'page': 567}, follow=True)
         
         expected_timestamp = datetime.datetime(2020, 1, 10, 0, 0, 0)
         quote = Quote.objects.get(pk=1)
@@ -113,19 +131,34 @@ class TestQuoteJourneys(TestCase):
             quote.modified.hour == expected_timestamp.hour,
             quote.modified.minute == expected_timestamp.minute,
         ]))
-        self.assertEqual('An modified quote', quote.text)
-        self.assertInHTML('An modified quote', res.rendered_content)
+        self.assertEqual('A modified quote', quote.text)
+        self.assertInHTML('A modified quote', res.rendered_content)
+
+    def test_cannot_update_quote_for_another_user(self):
+        tiny = User.objects.get(username="tiny")
+        with freeze_time('2020-01-10'):
+            self.client.force_login(tiny)
+            res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "A modified quote", 'page': 567}, follow=True)
+        
+        self.assertEqual(404, res.status_code)
 
     def test_can_delete_quote(self):
         tiny = User.objects.get(username="tiny")
         self.client.force_login(tiny)
 
-        res = self.client.post(QUOTES_URLS['delete-quote'](1), follow=True)
+        res = self.client.post(QUOTES_URLS['delete-quote'](3), follow=True)
         
-        quotes = Quote.objects.filter(pk=1)
+        quotes = Quote.objects.filter(pk=3)
         self.assertEqual(0, len(quotes))
         self.assertInHTML('<h1>Quotes</h1>', res.rendered_content)
         self.assertNotContains(res, escape("There's a thing that they said"))
+
+    def test_cannot_delete_quote_for_another_user(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+        res = self.client.post(QUOTES_URLS['delete-quote'](1), follow=True)
+        
+        self.assertEqual(404, res.status_code)
 
 BOOKS_URLS = {
     'new-book': lambda: reverse_lazy('quotes:new-book'),
@@ -139,7 +172,7 @@ class TestBookJourneys(TestCase):
     fixtures = ['quotes', 'users']
 
     def test_must_log_in_to_access_books(self):
-        tiny = User.objects.get(username="tiny")
+        bigboii = User.objects.get(username="bigboii")
 
         res_list = [
             self.client.get(BOOKS_URLS['new-book'](), follow=True),
@@ -151,7 +184,7 @@ class TestBookJourneys(TestCase):
         for res in res_list:
             self.assertContains(res, "<h1>Sign In</h1>")
 
-        self.client.force_login(tiny)
+        self.client.force_login(bigboii)
         res_list = [
             self.client.get(BOOKS_URLS['new-book']()),
             self.client.get(BOOKS_URLS['list-book']()),
@@ -162,13 +195,35 @@ class TestBookJourneys(TestCase):
         for res in res_list:
             self.assertEqual(200, res.status_code)
 
-    def test_books_list_shows_all_books(self):
+    def test_books_list_shows_20_books(self):
         tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
+        for i in range(10, 30):
+            with freeze_time(f"2030-01-{i}"):
+                new_book = Book(
+                    title=f"Book {i}",
+                    author=f"Ms. Writer",
+                    created_by=tiny
+                )
+                new_book.save()
 
+        bigboii = User.objects.get(username='bigboii')
+        with freeze_time(f"2030-02-01"):
+            new_book = Book(
+                title=f"Big life",
+                author=f"Big Boii",
+                created_by=bigboii
+            )
+            new_book.save()
+
+        self.client.force_login(tiny)
         res = self.client.get(BOOKS_URLS['list-book']())
-        for book in Book.objects.all():
-            self.assertInHTML(escape(book.title), res.rendered_content)
+        self.assertInHTML(f"Another book", res.rendered_content)
+        self.assertInHTML(f"Brand new book", res.rendered_content)
+        for i in range(10 ,28):
+            self.assertInHTML(f"Book {i}", res.rendered_content)
+        
+        self.assertNotContains(res, escape("Book 28"))
+        self.assertNotContains(res, escape("Big Life"))
 
     def test_can_create_new_book(self):
         tiny = User.objects.get(username="tiny")
@@ -186,15 +241,15 @@ class TestBookJourneys(TestCase):
             book.created.hour == expected_timestamp.hour,
             book.created.minute == expected_timestamp.minute,
         ]))
-        self.assertInHTML('<h1>Books</h1>', res.rendered_content)
+        self.assertEqual(tiny, book.created_by)
         self.assertInHTML('Mr Writer', res.rendered_content)
 
     def test_books_detail_contains_all_book_information(self):
         tiny = User.objects.get(username="tiny")
         self.client.force_login(tiny)
 
-        res = self.client.get(BOOKS_URLS['detail-book'](1))
-        self.assertInHTML(escape("Sprint"), res.rendered_content)
+        res = self.client.get(BOOKS_URLS['detail-book'](3))
+        self.assertInHTML(escape("Brand new book"), res.rendered_content)
         res = self.client.get(BOOKS_URLS['detail-book'](2))
         self.assertInHTML(escape("Another book"), res.rendered_content)
 
@@ -203,13 +258,20 @@ class TestBookJourneys(TestCase):
         self.assertInHTML(escape("Actually it's quite good"), res.rendered_content)
         self.assertInHTML(escape("No wait, it definitely sucks"), res.rendered_content)
 
+    def test_cannot_get_detail_on_another_users_book(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.get(BOOKS_URLS['detail-book'](1))
+        self.assertEqual(404, res.status_code)
+    
     def test_can_update_book(self):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-10'):
             self.client.force_login(tiny)
-            res = self.client.post(BOOKS_URLS['update-book'](1), data={'title': "Big Guns", 'author': 'Arnold Schwarzenegger'}, follow=True)
+            res = self.client.post(BOOKS_URLS['update-book'](2), data={'title': "Big Guns", 'author': 'Arnold Schwarzenegger'}, follow=True)
         
-        book = Book.objects.get(pk=1)
+        book = Book.objects.get(pk=2)
         expected_timestamp = datetime.datetime(2020, 1, 10, 0, 0, 0)
         self.assertTrue(all([
             book.modified.year == expected_timestamp.year,
@@ -221,13 +283,27 @@ class TestBookJourneys(TestCase):
         self.assertEqual('Big Guns', book.title)
         self.assertInHTML('Big Guns', res.rendered_content)
 
+    def test_cannot_update_another_users_book(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.post(BOOKS_URLS['update-book'](1), data={'title': "Big Guns", 'author': 'Arnold Schwarzenegger'}, follow=True)
+        self.assertEqual(404, res.status_code)
+    
     def test_can_delete_book(self):
         tiny = User.objects.get(username="tiny")
         self.client.force_login(tiny)
 
-        res = self.client.post(BOOKS_URLS['delete-book'](1), follow=True)
+        res = self.client.post(BOOKS_URLS['delete-book'](2), follow=True)
         
-        books = Book.objects.filter(pk=1)
+        books = Book.objects.filter(pk=2)
         self.assertEqual(0, len(books))
         self.assertInHTML('<h1>Books</h1>', res.rendered_content)
         self.assertNotContains(res, escape("Sprint"))
+
+    def test_cannot_delete_another_users_book(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.post(BOOKS_URLS['delete-book'](1), follow=True)
+        self.assertEqual(404, res.status_code)

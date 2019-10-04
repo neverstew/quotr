@@ -21,3 +21,15 @@ echo "ENV=DEV\nSECRET_KEY=<some_long_string>" > .env
 
 ## Deployment
 The application is deployed on Heroku.
+
+```bash
+git push heroku master
+```
+
+If there were migrations, these have to be run manually.
+
+```bash
+heroku run "./manage.py migrate"
+```
+
+Note: this assumes you have the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed. and configured.

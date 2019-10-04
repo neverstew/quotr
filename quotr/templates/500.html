@@ -1,0 +1,19 @@
+{% extends 'quotr/_layout.html' %}
+
+{% block styles %}
+<style>
+    .hero {
+        padding: 8em 0;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero flex one center">
+    <h1>500</h1>
+    <p>Uh-oh. Something broke on our end.</p>
+    <p>If this keeps happening, please <a href=\"https://neverstew.com/contact\">let us know</a>.</p>
+    {% include 'quotr/_back %}
+</div>
+{% endblock %}

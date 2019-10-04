@@ -8,6 +8,9 @@
 {% block content %}
 <h1>Books</h1>
 <section class="flex one two-800 center">
+  {% if book_list|length_is:"0" %}
+  <p>You don't seem to have any books saved yet! Add some using the button below.</p>
+  {% endif %}
   {% for book in book_list %}
   <article class="book card measure-narrow">
     <a href="{% url 'quotes:detail-book' book.id %}">

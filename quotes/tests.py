@@ -45,6 +45,15 @@ class TestQuoteJourneys(TestCase):
         for res in res_list:
             self.assertEqual(200, res.status_code)
 
+    def test_quotes_list_shows_placeholder_when_no_quotes(self):
+        new_user = User(username='fresh')
+        new_user.save()
+
+        self.client.force_login(new_user)
+        res = self.client.get(QUOTES_URLS['list-quote']())
+
+        self.assertInHTML("<p>You don't seem to have any quotes saved yet! Add some using the button below.</p>", res.rendered_content)
+
     def test_quotes_list_shows_20_last_modified_quotes(self):
         tiny = User.objects.get(username="tiny")
         for i in range(10, 30):
@@ -194,6 +203,15 @@ class TestBookJourneys(TestCase):
         ]
         for res in res_list:
             self.assertEqual(200, res.status_code)
+
+    def test_books_list_shows_placeholder_when_no_quotes(self):
+        new_user = User(username='fresh')
+        new_user.save()
+
+        self.client.force_login(new_user)
+        res = self.client.get(BOOKS_URLS['list-book']())
+
+        self.assertInHTML("<p>You don't seem to have any books saved yet! Add some using the button below.</p>", res.rendered_content)
 
     def test_books_list_shows_20_books(self):
         tiny = User.objects.get(username="tiny")

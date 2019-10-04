@@ -8,6 +8,9 @@
 {% block content %}
 <h1>Quotes</h1>
 <section class="flex one two-800 center">
+  {% if quote_list|length_is:"0" %}
+  <p>You don't seem to have any quotes saved yet! Add some using the button below.</p>
+  {% endif %}
   {% for quote in quote_list %}
   {% include 'quotes/_quote_card.html' with quote=quote%}
   {% endfor %}

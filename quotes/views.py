@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -16,7 +16,9 @@ class ListQuoteView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         quotes = Quote.objects.filter(created_by=self.request.user).order_by('-modified')
         if 'search' in self.request.GET and self.request.GET['search']:
-            quotes = quotes.annotate(search=SearchVector('text', 'book__title', 'book__author')).filter(search=self.request.GET['search'])
+            query = SearchQuery(self.request.GET['search'])
+            vector = SearchVector('text', 'book__title', 'book__author')
+            quotes = quotes.annotate(search=vector, rank=SearchRank(vector, query)).filter(search=self.request.GET['search']).order_by('-rank')
 
         return quotes
 

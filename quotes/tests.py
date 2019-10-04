@@ -104,6 +104,16 @@ class TestQuoteJourneys(TestCase):
         self.assertInHTML('<blockquote>This is a quote</blockquote>', res.rendered_content)
         self.assertInHTML('<blockquote>This is another quote</blockquote>', res.rendered_content)
 
+    def test_quotes_list_search_ordered_by_rank(self):
+        bigboii = User.objects.get(username='bigboii')
+
+        Quote(book=Book.objects.get(pk=1), text="This is another another quote", page=37, created_by=bigboii).save()
+
+        self.client.force_login(bigboii)
+        res = self.client.get(QUOTES_URLS['list-quote']()+'?search=another')
+        quote_list = [q.text for q in res.context_data['quote_list']]
+        self.assertEqual(["This is another another quote", "This is another quote"], quote_list)
+
     def test_can_create_new_quote(self):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-01'):

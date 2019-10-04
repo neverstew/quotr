@@ -1,0 +1,32 @@
+#search_form {
+    align-items: center;
+}
+
+#search_form p {
+    margin: 0;
+}
+
+#search_form label[for="id_search"] {
+	display: none;
+}
+
+#search_form input#id_search {
+    padding: 1em;
+}
+
+#search_form input[type="submit"] {
+    display: none;
+}
+
+@media screen and (max-width: 800px) {
+    #search_form {
+        margin: 1em;
+        padding: 0;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    #search_form {
+        padding: 0.6em;
+    }
+}

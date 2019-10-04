@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.postgres.search import SearchVector
 from django.urls import reverse_lazy
 from django.views import generic
 
 from .models import Quote, Book
+from .forms import QuoteSearchForm
 
 
 class IndexView(generic.base.TemplateView):
@@ -12,7 +14,16 @@ class ListQuoteView(LoginRequiredMixin, generic.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Quote.objects.filter(created_by=self.request.user).order_by('-modified')
+        quotes = Quote.objects.filter(created_by=self.request.user).order_by('-modified')
+        if 'search' in self.request.GET and self.request.GET['search']:
+            quotes = quotes.annotate(search=SearchVector('text', 'book__title', 'book__author')).filter(search=self.request.GET['search'])
+
+        return quotes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = QuoteSearchForm(self.request.GET)
+        return context
     
 class DetailQuoteView(LoginRequiredMixin, generic.DetailView):
     def get_queryset(self):
@@ -39,8 +50,10 @@ class DeleteQuoteView(LoginRequiredMixin, generic.DeleteView):
         return Quote.objects.filter(created_by=self.request.user)
 
 
+
 class ListBookView(LoginRequiredMixin, generic.ListView):
     paginate_by = 20
+    ordering = '-modified'
 
     def get_queryset(self):
         return Book.objects.filter(created_by=self.request.user)

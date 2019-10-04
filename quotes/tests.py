@@ -84,6 +84,26 @@ class TestQuoteJourneys(TestCase):
         self.assertNotContains(res, escape("This is the quote on page 9"))
         self.assertNotContains(res, escape("This is the quote by bigboii"))
 
+    def test_quotes_list_can_be_searched(self):
+        bigboii = User.objects.get(username='bigboii')
+        self.client.force_login(bigboii)
+
+        # search by quote text
+        res = self.client.get(QUOTES_URLS['list-quote']()+'?search=another')
+        self.assertNotContains(res, '<blockquote>This is a quote</blockquote>')
+        self.assertInHTML('<blockquote>This is another quote</blockquote>', res.rendered_content)
+        self.assertInHTML('<input type="text" name="search" value="another" placeholder="Search" maxlength="200" id="id_search">', res.rendered_content)
+
+        #search by book title
+        res = self.client.get(QUOTES_URLS['list-quote']()+'?search=Sprint')
+        self.assertInHTML('<blockquote>This is a quote</blockquote>', res.rendered_content)
+        self.assertInHTML('<blockquote>This is another quote</blockquote>', res.rendered_content)
+
+        #search by book author
+        res = self.client.get(QUOTES_URLS['list-quote']()+'?search=Jake%20Knapp')
+        self.assertInHTML('<blockquote>This is a quote</blockquote>', res.rendered_content)
+        self.assertInHTML('<blockquote>This is another quote</blockquote>', res.rendered_content)
+
     def test_can_create_new_quote(self):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-01'):
@@ -213,9 +233,9 @@ class TestBookJourneys(TestCase):
 
         self.assertInHTML("<p>You don't seem to have any books saved yet! Add some using the button below.</p>", res.rendered_content)
 
-    def test_books_list_shows_20_books(self):
+    def test_books_list_shows_20_last_modified_books(self):
         tiny = User.objects.get(username="tiny")
-        for i in range(10, 30):
+        for i in range(10, 31):
             with freeze_time(f"2030-01-{i}"):
                 new_book = Book(
                     title=f"Book {i}",
@@ -235,14 +255,11 @@ class TestBookJourneys(TestCase):
 
         self.client.force_login(tiny)
         res = self.client.get(BOOKS_URLS['list-book']())
-        self.assertInHTML(f"Another book", res.rendered_content)
-        self.assertInHTML(f"Brand new book", res.rendered_content)
-        for i in range(10 ,28):
+        for i in range(30, 10, -1):
             self.assertInHTML(f"Book {i}", res.rendered_content)
-        
-        self.assertNotContains(res, escape("Book 28"))
+        self.assertNotContains(res, escape("Book 10"))
         self.assertNotContains(res, escape("Big Life"))
-
+        
     def test_can_create_new_book(self):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-01'):

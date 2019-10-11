@@ -60,6 +60,18 @@
     }
   },
   {
+    "model": "quotes.quote",
+    "pk": 6,
+    "fields": {
+      "book": 3,
+      "text": "New book, new me!",
+      "page": 1,
+      "created": "2019-11-01T12:58:57.672Z",
+      "created_by": 2,
+      "modified": "2019-11-01T12:58:57.672Z"
+    }
+  },
+  {
     "model": "quotes.book",
     "pk": 1,
     "fields": {

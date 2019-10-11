@@ -162,14 +162,13 @@ class TestQuoteJourneys(TestCase):
         self.assertContains(res, "Brand new book")
         self.assertNotContains(res, "Sprint")
 
-    def test_update_quote_form_only_shows_users_books(self):
-        tiny = User.objects.get(username="tiny")
-        self.client.force_login(tiny)
+        # and the books must be in last modified order
+        # note below: choice = (<id>, <string representation of book>)
+        choices = [choice[1] for choice in list(res.context_data['form'].fields['book'].choices)]
+        # choice 0 is the blank option
+        self.assertEqual(choices[1], "Brand new book by Mike Skinner")
+        self.assertEqual(choices[2], "Another book by Some guy")
 
-        res = self.client.get(QUOTES_URLS['update-quote'](3))
-        self.assertContains(res, "Another book")
-        self.assertContains(res, "Brand new book")
-        self.assertNotContains(res, "Sprint")
 
     def test_quotes_detail_shows_quote(self):
         bigboii = User.objects.get(username="bigboii")
@@ -218,6 +217,15 @@ class TestQuoteJourneys(TestCase):
             res = self.client.post(QUOTES_URLS['update-quote'](1), data={'book': 1, 'text': "A modified quote", 'page': 567}, follow=True)
         
         self.assertEqual(404, res.status_code)
+
+    def test_update_quote_form_only_shows_users_books(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.get(QUOTES_URLS['update-quote'](3))
+        self.assertContains(res, "Another book")
+        self.assertContains(res, "Brand new book")
+        self.assertNotContains(res, "Sprint")
 
     def test_can_delete_quote(self):
         tiny = User.objects.get(username="tiny")

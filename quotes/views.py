@@ -39,7 +39,8 @@ class NewQuoteView(LoginRequiredMixin, generic.CreateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
         form.instance.created_by = self.request.user
-        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user))
+        
+        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user).order_by('-modified'))
 
         return form
 
@@ -48,7 +49,7 @@ class UpdateQuoteView(LoginRequiredMixin, generic.UpdateView):
     
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
-        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user))
+        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user).order_by('-modified'))
 
         return form
     

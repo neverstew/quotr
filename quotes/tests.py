@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse_lazy
 from django.utils.html import escape
@@ -118,7 +119,12 @@ class TestQuoteJourneys(TestCase):
         tiny = User.objects.get(username="tiny")
         with freeze_time('2020-01-01'):
             self.client.force_login(tiny)
-            res = self.client.post(QUOTES_URLS['new-quote'](), data={'book': 1, 'text': "A new quote", 'page': 567}, follow=True)
+            quote_data = {
+                'book': 2,
+                'text': "A new quote",
+                'page': 567,
+            }
+            res = self.client.post(QUOTES_URLS['new-quote'](), data=quote_data, follow=True)
         
         # raises a DoesNotExist exception if this query fails
         quote = Quote.objects.get(text='A new quote', page=567)
@@ -133,6 +139,38 @@ class TestQuoteJourneys(TestCase):
         self.assertEqual(tiny, quote.created_by)
         self.assertInHTML('A new quote', res.rendered_content)
     
+    def test_quotes_can_only_reference_same_users_books(self):
+        tiny = User.objects.get(username='tiny')
+        book_by_someone_else = Book.objects.exclude(created_by=tiny)[0]
+        
+        with self.assertRaises(ValidationError):
+            bad_quote = Quote(
+                book=book_by_someone_else,
+                text="A bad quote",
+                page=25,
+                created_by=tiny
+            )
+
+            bad_quote.full_clean()
+
+    def test_create_quote_form_only_shows_users_books(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.get(QUOTES_URLS['new-quote']())
+        self.assertContains(res, "Another book")
+        self.assertContains(res, "Brand new book")
+        self.assertNotContains(res, "Sprint")
+
+    def test_update_quote_form_only_shows_users_books(self):
+        tiny = User.objects.get(username="tiny")
+        self.client.force_login(tiny)
+
+        res = self.client.get(QUOTES_URLS['update-quote'](3))
+        self.assertContains(res, "Another book")
+        self.assertContains(res, "Brand new book")
+        self.assertNotContains(res, "Sprint")
+
     def test_quotes_detail_shows_quote(self):
         bigboii = User.objects.get(username="bigboii")
         self.client.force_login(bigboii)

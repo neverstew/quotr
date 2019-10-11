@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.forms import ModelChoiceField
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -35,12 +36,21 @@ class NewQuoteView(LoginRequiredMixin, generic.CreateView):
     model = Quote
     fields = ['book', 'text', 'page']
     
-    def form_valid(self, form):
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
         form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user))
+
+        return form
 
 class UpdateQuoteView(LoginRequiredMixin, generic.UpdateView):
     fields = ['book', 'text', 'page']
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields['book'] = ModelChoiceField(queryset=Book.objects.filter(created_by=self.request.user))
+
+        return form
     
     def get_queryset(self):
         return Quote.objects.filter(created_by=self.request.user)

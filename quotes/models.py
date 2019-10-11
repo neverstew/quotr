@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.contrib import admin
 from django.db import models
 from django.urls import reverse
@@ -29,6 +30,11 @@ class Quote(models.Model):
 
     def get_absolute_url(self):
         return reverse('quotes:detail-quote', args=(self.pk,))
+
+    def clean(self):
+        book = Book.objects.get(pk=self.book.id)
+        if book.created_by != self.created_by:
+            raise ValidationError("You must only create quotes for books that you created.") 
 
     def __str__(self):
         truncated_text = self.text[:20]+'...' if len(self.text) > 20 else self.text

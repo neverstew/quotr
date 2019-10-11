@@ -29,6 +29,11 @@ done easily with Docker.
 docker run --name quotr-postgres -p 5432:5432 -e POSTGRES_USER=django -e POSTGRES_PASSWORD=django postgres
 ```
 
+On subsequent runs, you just need to execute
+```bash
+docker start quotr-postgres
+```
+
 ## Environment Variables
 In order to run the application, some environment variables need to be defined.
 
